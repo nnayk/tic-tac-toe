@@ -81,7 +81,7 @@ def terminal(board):
     Returns True if game is over, False otherwise.
     """
     rows, cols = get_dimensions(board)
-    return sum(get_counts) == (rows * cols)
+    return sum(get_counts(board)) == (rows * cols)
 
 
 def get_counts(board):
