@@ -3,6 +3,7 @@ Tic Tac Toe Player
 """
 
 import math
+from copy import deepcopy
 
 X = "X"
 O = "O"
@@ -21,11 +22,9 @@ def player(board):
     Returns player who has the next turn on a board. If game has ended,
     returns None.
     """
-    x_count, o_count = 0, 0
-    for i in range(len(board)):
-        if terminal(board):
-            return None
-        x_count, o_count = get_counts(board)
+    if terminal(board):
+        return None
+    x_count, o_count = get_counts(board)
     return X if x_count == o_count else O
 
 
@@ -46,11 +45,10 @@ def result(board, action):
     Returns a new board that results from making move (i, j) on the board.
     Raises an exception if action is not valid.
     """
-    newBoard = board.copy()
+    newBoard = deepcopy(board)
     row, col = action
     if not valid_bounds(row, col, board):
         raise Exception(f"Invalid action ({row},{col})")
-
     newBoard[row][col] = player(board)
     return newBoard
 
@@ -142,30 +140,37 @@ def minimax(board):
     if terminal(board):
         return None
 
-    def helper(board):
-        if terminal(board):
-            return utility(board)
-        possibleActions = actions(board)
-        currPlayer = player(board)
-        best = None
+    def helper(currBoard):
+        if terminal(currBoard):
+            return utility(currBoard), None
+        possibleActions = actions(currBoard)
+        print(f"possibleActions: {possibleActions}")
+        currPlayer = player(currBoard)
+        bestScore = None
+        bestAction = None
         # try each action, and return the best one at each step.
         # utilize alpha beta pruning to avoid exploring unnecessary
         # actions
         for action in possibleActions:
-            newBoard = result(board, action)
-            score = helper(newBoard)
+            newBoard = result(currBoard, action)
+            score = helper(newBoard)[0]
             if max_score(currPlayer, score):
-                best = action
+                bestAction = action
+                bestScore = score
                 break
-            elif best is None:
-                best = action
-            elif currPlayer == X and score > best:
-                best = action
-            elif currPlayer == O and score < best:
-                best = action
-        return best
+            elif bestScore is None:
+                bestAction = action
+                bestScore = score
+            elif currPlayer == X and score > bestScore:
+                bestAction = action
+                bestScore = score
+            elif currPlayer == O and score < bestScore:
+                bestAction = action
+                bestScore = score
+        return (bestScore, bestAction)
 
-    return helper(board)
+    data = helper(board)[1]
+    return data
 
 
 def max_score(currPlayer, score):
