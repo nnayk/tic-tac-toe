@@ -169,8 +169,9 @@ def minimax(board):
                 bestScore = score
         return (bestScore, bestAction)
 
-    data = helper(board)[1]
-    return data
+    data = helper(board)
+    print("post minimax: ", data)
+    return data[1]
 
 
 def max_score(currPlayer, score):
