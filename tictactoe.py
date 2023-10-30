@@ -152,7 +152,14 @@ def minimax(board):
             newBoard = result(board, action)
             score = helper(newBoard)
             if max_score(currPlayer, score):
-                return best
+                best = action
+                break
+            elif best is None:
+                best = action
+            elif currPlayer == X and score > best:
+                best = action
+            elif currPlayer == O and score < best:
+                best = action
 
     return helper(board)
 
