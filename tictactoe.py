@@ -139,10 +139,12 @@ def minimax(board):
     Returns the optimal action for the current player on the board.
     Returns None for a terminal board.
     """
+    if terminal(board):
+        return None
 
     def helper(board):
         if terminal(board):
-            return None
+            return utility(board)
         possibleActions = actions(board)
         currPlayer = player(board)
         best = None
@@ -157,7 +159,7 @@ def minimax(board):
                 break
             elif best is None:
                 best = action
-            elif currPlayer == X and score > best:
+            elif currPlayer == X and (score > best):
                 best = action
             elif currPlayer == O and score < best:
                 best = action
