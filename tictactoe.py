@@ -88,6 +88,7 @@ def get_counts(board):
     """
     Returns the number of Xs and Os on the board.
     """
+    x_count, o_count = 0, 0
     for i in range(len(board)):
         for j in range(len(board[0])):
             if board[i][j] == X:
