@@ -29,7 +29,7 @@ def player(board):
     return X if x_count == o_count else O
 
 
-def actions(board):
+def get_actions(board):
     """
     Returns set of all possible actions (i, j) available on the board.
     """
@@ -43,10 +43,23 @@ def actions(board):
 
 def result(board, action):
     """
-    Returns the board that results from making move (i, j) on the board.
+    Returns a new board that results from making move (i, j) on the board.
+    Raises an exception if action is not valid.
     """
+    newBoard = board.copy()
     row, col = action
+    if not valid_bounds(row, col, board):
+        raise Exception(f"Invalid action ({row},{col})")
+
     board[row][col] = player(board)
+
+
+def valid_bounds(row, col, board):
+    """
+    Returns True if row and col are within the bounds of the board.
+    """
+    rows, cols = get_dimensions(board)
+    return (row >= 0 and row < rows) and (col >= 0 and col < cols)
 
 
 def winner(board):
@@ -123,4 +136,5 @@ def minimax(board):
     """
     Returns the optimal action for the current player on the board.
     """
-    raise NotImplementedError
+    actions = get_actions(board)
+    player = get_player(board)
