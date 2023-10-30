@@ -136,6 +136,29 @@ def utility(board):
 def minimax(board):
     """
     Returns the optimal action for the current player on the board.
+    Returns None for a terminal board.
     """
-    actions = get_actions(board)
-    player = get_player(board)
+
+    def helper(board):
+        if terminal(board):
+            return None
+        possibleActions = actions(board)
+        currPlayer = player(board)
+        best = None
+        # try each action, and return the best one at each step.
+        # utilize alpha beta pruning to avoid exploring unnecessary
+        # actions
+        for action in possibleActions:
+            newBoard = result(board, action)
+            score = helper(newBoard)
+            if max_score(currPlayer, score):
+                return best
+
+    return helper(board)
+
+
+def max_score(currPlayer, score):
+    """
+    Returns True if the score is the best score for the current player.
+    """
+    return (currPlayer == X and score == 1) or (currPlayer == O and score == -1)
