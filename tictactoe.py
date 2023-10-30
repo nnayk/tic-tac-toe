@@ -29,7 +29,7 @@ def player(board):
     return X if x_count == o_count else O
 
 
-def get_actions(board):
+def actions(board):
     """
     Returns set of all possible actions (i, j) available on the board.
     """
