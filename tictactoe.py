@@ -51,7 +51,8 @@ def result(board, action):
     if not valid_bounds(row, col, board):
         raise Exception(f"Invalid action ({row},{col})")
 
-    board[row][col] = player(board)
+    newBoard[row][col] = player(board)
+    return newBoard
 
 
 def valid_bounds(row, col, board):
