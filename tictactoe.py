@@ -78,8 +78,8 @@ def terminal(board):
     """
     Returns True if game is over, False otherwise.
     """
-    rows, cols = get_dimensions(board)
-    return sum(get_counts(board)) == (rows * cols)
+    win = winner(board)
+    return True if win else None
 
 
 def get_counts(board):
@@ -93,6 +93,7 @@ def get_counts(board):
                 x_count += 1
             elif board[i][j] == O:
                 o_count += 1
+    print(f"get_counts: x_count = {x_count}, o_count = {o_count}")
     return x_count, o_count
 
 
@@ -111,23 +112,35 @@ def utility(board):
     # check all rows
     for row in board:
         if row.count(X) == len(row):
+            print("r1")
             return 1
         elif row.count(O) == len(row):
+            print("r2")
             return -1
     # check all columns
     for i in range(rows):
         col = [row[i] for row in board]
         if col.count(X) == len(col):
+            print("c1")
             return 1
         elif col.count(O) == len(col):
+            print("c2")
             return -1
     # check diagonals
     diagonal_1 = [board[i][i] for i in range(rows)]
-    if len(set(diagonal_1)) == len(diagonal_1):
-        return 1 if X in diagonal_1 else -1
-    diagonal_2 = [board[i][cols - 1 - i] for i in range(rows)]
-    if len(set(diagonal_2)) == len(diagonal_2):
-        return 1 if X in diagonal_2 else -1
+    if diagonal_1.count(X) == len(diagonal_1):
+        print("d1")
+        return 1
+    elif diagonal_1.count(O) == len(diagonal_1):
+        print("d2")
+        return -1
+    diagonal_2 = [board[i][rows - 1 - i] for i in range(rows)]
+    if diagonal_2.count(X) == len(diagonal_2):
+        print("d3")
+        return 1
+    elif diagonal_2.count(O) == len(diagonal_2):
+        print("d4")
+        return -1
     # no winner
     return 0
 
@@ -138,13 +151,12 @@ def minimax(board):
     Returns None for a terminal board.
     """
     if terminal(board):
-        return None
+        return None, None
 
     def helper(currBoard):
         if terminal(currBoard):
             return utility(currBoard), None
         possibleActions = actions(currBoard)
-        print(f"possibleActions: {possibleActions}")
         currPlayer = player(currBoard)
         bestScore = None
         bestAction = None
@@ -153,12 +165,14 @@ def minimax(board):
         # actions
         for action in possibleActions:
             newBoard = result(currBoard, action)
+            print(f"recursing on {newBoard}")
             score = helper(newBoard)[0]
-            if max_score(currPlayer, score):
-                bestAction = action
-                bestScore = score
-                break
-            elif bestScore is None:
+            print(f"score = {score}")
+            # if max_score(currPlayer, score):
+            #     bestAction = action
+            #     bestScore = score
+            #     break
+            if bestScore is None:
                 bestAction = action
                 bestScore = score
             elif currPlayer == X and score > bestScore:
@@ -167,6 +181,7 @@ def minimax(board):
             elif currPlayer == O and score < bestScore:
                 bestAction = action
                 bestScore = score
+        print(f"best score = {bestScore}, best action = {bestAction}")
         return (bestScore, bestAction)
 
     data = helper(board)
