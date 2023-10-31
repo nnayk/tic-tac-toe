@@ -78,8 +78,11 @@ def terminal(board):
     """
     Returns True if game is over, False otherwise.
     """
-    win = winner(board)
-    return True if win else None
+    x_count, o_count = get_counts(board)
+    rows, cols = get_dimensions(board)
+    if (x_count + o_count) == (rows * cols):
+        return True
+    return winner(board) != None
 
 
 def get_counts(board):
@@ -93,7 +96,6 @@ def get_counts(board):
                 x_count += 1
             elif board[i][j] == O:
                 o_count += 1
-    print(f"get_counts: x_count = {x_count}, o_count = {o_count}")
     return x_count, o_count
 
 
@@ -116,8 +118,8 @@ def utility(board):
         elif row.count(O) == len(row):
             return -1
     # check all columns
-    for i in range(rows):
-        col = [row[i] for row in board]
+    for i in range(cols):
+        col = [col[i] for col in board]
         if col.count(X) == len(col):
             return 1
         elif col.count(O) == len(col):
@@ -147,7 +149,8 @@ def minimax(board):
 
     def helper(currBoard):
         if terminal(currBoard):
-            return utility(currBoard), None
+            score = utility(currBoard)
+            return score, None
         possibleActions = actions(currBoard)
         currPlayer = player(currBoard)
         bestScore = None
@@ -157,13 +160,11 @@ def minimax(board):
         # actions
         for action in possibleActions:
             newBoard = result(currBoard, action)
-            print(f"recursing on {newBoard}")
             score = helper(newBoard)[0]
-            print(f"score = {score}")
-            # if max_score(currPlayer, score):
-            #     bestAction = action
-            #     bestScore = score
-            #     break
+            if max_score(currPlayer, score):
+                bestAction = action
+                bestScore = score
+                break
             if bestScore is None:
                 bestAction = action
                 bestScore = score
@@ -173,11 +174,9 @@ def minimax(board):
             elif currPlayer == O and score < bestScore:
                 bestAction = action
                 bestScore = score
-        print(f"best score = {bestScore}, best action = {bestAction}")
         return (bestScore, bestAction)
 
     data = helper(board)
-    print("post minimax: ", data)
     return data[1]
 
 
