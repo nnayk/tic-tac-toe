@@ -112,34 +112,26 @@ def utility(board):
     # check all rows
     for row in board:
         if row.count(X) == len(row):
-            print("r1")
             return 1
         elif row.count(O) == len(row):
-            print("r2")
             return -1
     # check all columns
     for i in range(rows):
         col = [row[i] for row in board]
         if col.count(X) == len(col):
-            print("c1")
             return 1
         elif col.count(O) == len(col):
-            print("c2")
             return -1
     # check diagonals
     diagonal_1 = [board[i][i] for i in range(rows)]
     if diagonal_1.count(X) == len(diagonal_1):
-        print("d1")
         return 1
     elif diagonal_1.count(O) == len(diagonal_1):
-        print("d2")
         return -1
     diagonal_2 = [board[i][rows - 1 - i] for i in range(rows)]
     if diagonal_2.count(X) == len(diagonal_2):
-        print("d3")
         return 1
     elif diagonal_2.count(O) == len(diagonal_2):
-        print("d4")
         return -1
     # no winner
     return 0
